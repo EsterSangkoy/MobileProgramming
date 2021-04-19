@@ -2,8 +2,9 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import Card from '../../molecules/Card';
 import Axios from 'axios';
+import Button from '../../atoms/Button';
 
-const HomeScreen = () => {
+const UserList = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -14,22 +15,31 @@ const HomeScreen = () => {
     
     //Axios
     Axios
-    .get('https://jsonplaceholder.typicode.com/users')
+    .get('http://10.0.2.2:3004/users')
     .then((res) => setUsers(res.data));
-  }, []);
+  }, [users]);
+
+const handleSubmit = () => {
+  const data = {
+        email: 's21910288@student.unklab.ac.id',
+        first_name: 'Ester',
+        last_name: 'Sangkoy',
+  };
+  Axios.post('http://10.02.2:3004/users', data)
+};
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Users List</Text>
 
       <ScrollView showsVerticalScrollIndicator={false}>
+        <Button label="Save" onSubmit={handleSubmit}/>
         {users.map(item => 
           <Card
-          name={item.name}
-          username={item.username}
+          key={item.id}
+          fullName={`${item.fist_name} ${item.last_name}`}
           email={item.email}
-          address={`${item.address.street}, ${item.address.suite}, ${item.address.city}, ${item.address.zipcode}`}
-          phone={item.phone}
+          imageUrl={item.avatar}
           />
         )}
       </ScrollView>
@@ -37,7 +47,7 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+export default UserList;
 
 const styles = StyleSheet.create({
   container: {
